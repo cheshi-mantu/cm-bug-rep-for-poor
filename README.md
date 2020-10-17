@@ -1,2 +1,6 @@
 # cm-bug-rep-for-poor
-MS Excel + VBA test cases and bug reporting
+## test cases template and some automations by VBA means
+- MS Excel 
+- VBA 
+
+
