@@ -10,6 +10,9 @@ Sub getCellValueCreateSheet()
     Set SelectedCell = Application.ActiveCell
     Set CurrentWorksheet = Application.ActiveSheet
     
+    If Selection.Column > 1 Then
+        Cells(Selection.Row, 1).Select
+    End If
     
     nameForNewSheet = Selection.Value
     
@@ -60,18 +63,18 @@ Sub createNewBugReportSheet()
     Application.Sheets(CurrentWorksheet.Name).Activate
     '-------------
         
-    Set CellToUpdate = Cells(SelectedCell.Row, getColumnNumber("Комментарии", "test cases"))
+    Set CellToUpdate = Cells(SelectedCell.Row, getColumnNumber("HDR_COM_LINK", "test cases"))
     
     CurrentWorksheet.Hyperlinks.Add Anchor:=CellToUpdate, Address:="", SubAddress:="'" + nameForNewSheet + "'" + "!A1", TextToDisplay:="Bug report " + nameForNewSheet
     
     locateAndUpdate nameForNewSheet, "Status", 1, "New"
     
-    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("Результат", "test cases"))
+    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_RESULT", "test cases"))
     locateAndUpdate nameForNewSheet, "Brief description", 1, CellToGetInfoFrom.Text
     locateAndUpdate nameForNewSheet, "Actual Result", 1, CellToGetInfoFrom.Text
-    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("Действие", "test cases"))
+    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_ACTION", "test cases"))
     locateAndUpdate nameForNewSheet, "Steps to reproduce", 1, CellToGetInfoFrom.Text
-    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("Раздел сайта", "test cases"))
+    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_SITE_PAGE", "test cases"))
     locateAndUpdate nameForNewSheet, "App component", 1, CellToGetInfoFrom.Text
     
     

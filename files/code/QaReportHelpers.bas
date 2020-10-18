@@ -69,7 +69,7 @@ Sub setStatus(strStatus As String)
     End With
     
     If Not SearchForRange Is Nothing Then
-        Set StatusUpdateCell = SearchForRange.offset(0, getColumnNumber("Status", "test cases") - 1)
+        Set StatusUpdateCell = SearchForRange.offset(0, getColumnNumber("HDR_BR_STATUS", "test cases") - 1)
         StatusUpdateCell.Value = strStatus
     Else
         MsgBox "No Id found for " + strSearchString, vbOKOnly, "Something is wrong"
