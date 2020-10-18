@@ -1,4 +1,5 @@
 Attribute VB_Name = "QaReportTool"
+
 Sub getCellValueCreateSheet()
 
     Dim nameForNewSheet
@@ -99,7 +100,7 @@ FilePath = ActiveWorkbook.FullName
 FileOnly = ActiveWorkbook.Name
 PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
     
-    Rows("1:100").Select
+    Rows("3:10002").Select
     
     With Selection
         .HorizontalAlignment = xlGeneral
