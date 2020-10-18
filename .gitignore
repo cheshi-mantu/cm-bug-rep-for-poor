@@ -11,7 +11,8 @@
 .mtj.tmp/
 #pdf files
 *.pdf
-
+# macro enabled excel files
+*.xlsm
 
 # Package Files #
 *.jar
@@ -23,3 +24,4 @@
 *.rar
 *.iml
 *.secret
+files/template check list bug reports.xlsm
