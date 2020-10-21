@@ -39,6 +39,7 @@ Sub createNewBugReportSheet()
     Dim CellToUpdate As Range
     Dim ObjTestId As Range
     Dim CellToGetInfoFrom As Range
+    Dim strDateTime As String
     Set SelectedCell = Application.ActiveCell
     Set CurrentWorksheet = Application.ActiveSheet
 
@@ -50,7 +51,10 @@ Sub createNewBugReportSheet()
     
     ObjTestId.Select
 
-    
+    If Selection.Column > 1 Then
+        Cells(Selection.Row, 1).Select
+    End If
+            
     nameForNewSheet = "BR-" + Selection.Value
     
     If Not sheetExistInCurrentWorkbook(nameForNewSheet) Then
@@ -58,13 +62,11 @@ Sub createNewBugReportSheet()
     End If
         
     
-    'locateAndUpdate nameForNewSheet, "Actual Result", 1, CellToGetInfoFrom.Text
-    
     '-------------
     Application.Sheets(CurrentWorksheet.Name).Activate
     '-------------
         
-    Set CellToUpdate = Cells(SelectedCell.Row, getColumnNumber("HDR_COM_LINK", "test cases"))
+    Set CellToUpdate = Cells(SelectedCell.Row, getColumnNumber("HDR_COM_LNK", Application.Range("TEST_CASES_SHEET").Text))
     
     CurrentWorksheet.Hyperlinks.Add Anchor:=CellToUpdate, Address:="", SubAddress:="'" + nameForNewSheet + "'" + "!A1", TextToDisplay:="Bug report " + nameForNewSheet
     
@@ -77,6 +79,11 @@ Sub createNewBugReportSheet()
     locateAndUpdate nameForNewSheet, "Steps to reproduce", 1, CellToGetInfoFrom.Text
     Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_SITE_PAGE", "test cases"))
     locateAndUpdate nameForNewSheet, "App component", 1, CellToGetInfoFrom.Text
+    
+    strDateTime = CStr(Date) + " " + CStr(Time())
+    
+    locateAndUpdate nameForNewSheet, "Bug report creation", 1, strDateTime
+    Selection.NumberFormat = "dd/mm/yy h:mm;@"
     
     
     
@@ -114,7 +121,7 @@ PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
         .MergeCells = False
     End With
     
-    Rows("1:100").EntireRow.AutoFit
+    Rows("1:14").EntireRow.AutoFit
     Cells(1, 1).Select
 
 With ActiveSheet
@@ -151,11 +158,8 @@ Sub sendBugReportPdf()
 
     
     Application.Range("MSG_SUBJECT").Value = "Bug report - Severity " + Left(severityText.Text, 2) + " - " + ActiveSheet.Name + " - for " + Application.Range("APP_NAME")
-    'Debug.Print Application.Range("MSG_SUBJECT").Text
     
     strHTMLBody = Application.Range("HEADER_MSG").Text + Application.Range("BODY_MSG").Text + Application.Range("FOOTER_MSG").Text
-    'Debug.Print strHTMLBody
-
 '-----------
 'refactor this!
     FilePath = ActiveWorkbook.FullName
