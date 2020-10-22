@@ -17,7 +17,7 @@ Sub getCellValueCreateSheet()
     
     nameForNewSheet = Selection.Value
     
-    Set NewSheet = ActiveWorkbook.Sheets.Add(before:=ActiveWorkbook.Worksheets("dict"))
+    Set NewSheet = ActiveWorkbook.Sheets.Add(Before:=ActiveWorkbook.Worksheets("dict"))
         NewSheet.Paste
 
     NewSheet.Name = nameForNewSheet
@@ -55,7 +55,7 @@ Sub createNewBugReportSheet()
         Cells(Selection.Row, 1).Select
     End If
             
-    nameForNewSheet = "BR-" + Selection.Value
+    nameForNewSheet = "BR" + Selection.Value
     
     If Not sheetExistInCurrentWorkbook(nameForNewSheet) Then
         subToolSheetCopy "bug-report template", nameForNewSheet
@@ -129,17 +129,23 @@ PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
     Cells(1, 1).Select
 
 With ActiveSheet
-        .ExportAsFixedFormat Type:=xlTypePDF, Filename:=PathOnly + ActiveSheet.Name, Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas:=False, OpenAfterPublish:=False
+        .ExportAsFixedFormat Type:=xlTypePDF, Filename:=PathOnly + ActiveSheet.Name, Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas:=False, OpenAfterPublish:=True
      End With
 End Sub
 
 Sub sendBugReportPdf()
     'On Error Resume Next
-    Dim strHTMLBody
+    Dim strHTMLBody As String
     Dim severityText As Range
     Dim strRecipient As String
     Dim strAttachPath As String
     Dim myAttachments As Outlook.Attachments
+    Dim strHTMLBodyHeader, strHTMLBodyFooter
+     
+    strHTMLBodyHeader = "<html><body><div style='font-family:Arial Unicode MS;font-size:12pt'>"
+    strHTMLBodyFooter = "</div></body></html>"
+
+    
     
     strRecipient = Application.Range("CLIENT_EMAIL").Text
     
@@ -162,6 +168,8 @@ Sub sendBugReportPdf()
     Application.ActiveWorkbook.Sheets("email_templates").Range("MSG_SUBJECT").Value = "Bug report - Severity " + Left(severityText.Text, 2) + " - " + ActiveSheet.Name + " - for " + Application.Range("APP_NAME")
     
     strHTMLBody = Application.ActiveWorkbook.Sheets("email_templates").Range("HEADER_MSG").Text + Application.ActiveWorkbook.Sheets("email_templates").Range("BODY_MSG").Text + Application.ActiveWorkbook.Sheets("email_templates").Range("FOOTER_MSG").Text
+    strHTMLBody = Replace(strHTMLBody, vbLf, "<br/>")
+    strHTMLBody = strHTMLBodyHeader + strHTMLBody + strHTMLBodyFooter
 '-----------
 'refactor this!
     FilePath = ActiveWorkbook.FullName
@@ -207,7 +215,7 @@ Dim intLastLine As Integer
     strTestCasesSheet = Application.Range("TEST_CASES_SHEET")
  
     If Not sheetExistInCurrentWorkbook(strBugRepSheetName) Then
-        Application.ActiveWorkbook.Sheets.Add before:=Sheets(strTestCasesSheet)
+        Application.ActiveWorkbook.Sheets.Add Before:=Sheets(strTestCasesSheet)
         ActiveSheet.Name = strBugRepSheetName
     End If
     Set bugReportsWS = Sheets(strBugRepSheetName)
