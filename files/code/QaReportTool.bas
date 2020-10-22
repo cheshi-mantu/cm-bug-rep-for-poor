@@ -75,6 +75,10 @@ Sub createNewBugReportSheet()
     Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_RESULT", "test cases"))
     locateAndUpdate nameForNewSheet, "Brief description", 1, CellToGetInfoFrom.Text
     locateAndUpdate nameForNewSheet, "Actual Result", 1, CellToGetInfoFrom.Text
+    
+    Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_EXPECT", "test cases"))
+    locateAndUpdate nameForNewSheet, "Expected result", 1, CellToGetInfoFrom.Text
+    
     Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_ACTION", "test cases"))
     locateAndUpdate nameForNewSheet, "Steps to reproduce", 1, CellToGetInfoFrom.Text
     Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_SITE_PAGE", "test cases"))
@@ -131,7 +135,6 @@ End Sub
 
 Sub sendBugReportPdf()
     'On Error Resume Next
-    Dim strFrom As String
     Dim strHTMLBody
     Dim severityText As Range
     Dim strRecipient As String
@@ -142,10 +145,9 @@ Sub sendBugReportPdf()
     
     Dim FilePath, FileOnly, PathOnly As String
     
-    strFrom = Application.Range("MAIL_ACCOUNT").Text
     
-    Application.Range("BUG_REP_ID").Value = ActiveSheet.Name
-    Application.Range("ISSUE_BRIEF_DESCRIPTION").Value = locateAndGetValue(ActiveSheet.Name, "Brief description", 1)
+    Application.ActiveWorkbook.Sheets("email_templates").Range("BUG_REP_ID").Value = ActiveSheet.Name
+    Application.ActiveWorkbook.Sheets("email_templates").Range("ISSUE_BRIEF_DESCRIPTION").Value = locateAndGetValue(ActiveSheet.Name, "Brief description", 1)
     
     
     With ActiveSheet.Range("A1:A100")
@@ -157,9 +159,9 @@ Sub sendBugReportPdf()
     End If
 
     
-    Application.Range("MSG_SUBJECT").Value = "Bug report - Severity " + Left(severityText.Text, 2) + " - " + ActiveSheet.Name + " - for " + Application.Range("APP_NAME")
+    Application.ActiveWorkbook.Sheets("email_templates").Range("MSG_SUBJECT").Value = "Bug report - Severity " + Left(severityText.Text, 2) + " - " + ActiveSheet.Name + " - for " + Application.Range("APP_NAME")
     
-    strHTMLBody = Application.Range("HEADER_MSG").Text + Application.Range("BODY_MSG").Text + Application.Range("FOOTER_MSG").Text
+    strHTMLBody = Application.ActiveWorkbook.Sheets("email_templates").Range("HEADER_MSG").Text + Application.ActiveWorkbook.Sheets("email_templates").Range("BODY_MSG").Text + Application.ActiveWorkbook.Sheets("email_templates").Range("FOOTER_MSG").Text
 '-----------
 'refactor this!
     FilePath = ActiveWorkbook.FullName
@@ -175,7 +177,7 @@ Sub sendBugReportPdf()
 
         oMail.To = strRecipient
         oMail.HTMLBody = strHTMLBody
-        oMail.Subject = Application.Range("MSG_SUBJECT").Text
+        oMail.Subject = Application.ActiveWorkbook.Sheets("email_templates").Range("MSG_SUBJECT").Text
         
         Set myAttachments = oMail.Attachments
         myAttachments.Add strAttachPath
