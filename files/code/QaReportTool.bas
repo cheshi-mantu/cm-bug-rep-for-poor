@@ -228,7 +228,7 @@ Dim intLastLine As Integer
     For Each SheetItem In ActiveWorkbook.Sheets
         intLastLine = bugReportsWS.Range("A1048576").End(xlUp).Row
         
-        If InStr(SheetItem.Name, "BR-") > 0 Then
+        If InStr(SheetItem.Name, "BR") > 0 Then
             'SheetItem.Activate
             'bugReportsWS.Cells(intLastLine + 1, 1).Value = SheetItem.Name
             bugReportsWS.Hyperlinks.Add Anchor:=bugReportsWS.Cells(intLastLine + 1, 1), Address:="", SubAddress:="'" + SheetItem.Name + "'" + "!A1", TextToDisplay:=SheetItem.Name
