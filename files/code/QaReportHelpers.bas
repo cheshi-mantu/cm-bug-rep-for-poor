@@ -246,11 +246,31 @@ Sub formatTableHeader()
         .PatternTintAndShade = 0
     End With
 End Sub
+Function getThisPath()
+Dim FilePath, FileOnly, PathOnly As String
+    FilePath = ActiveWorkbook.FullName
+    FileOnly = ActiveWorkbook.Name
+    PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
+    getThisPath = PathOnly
+End Function
 
-
-
-
-
+Sub disableDisplayOfUpdates(EnableDisable As Boolean)
+'if EnableDisable = 0, then disable notifications and updates
+'if EnableDisable = 1, then enable notifications and updates
+If EnableDisable = False Then
+    Application.ScreenUpdating = False 'don't update screet in order to speed up the process
+    Application.DisplayAlerts = False 'suppress all dialogues application could raise
+    Application.Calculation = xlManual 'temporary disable automatic calculation
+    Application.StatusBar = "Notifications and calculations are suppressed"
+End If
+If EnableDisable = True Then
+    Application.Calculate
+    Application.DisplayAlerts = True
+    Application.ScreenUpdating = True
+    Application.Calculation = xlAutomatic
+    Application.StatusBar = "Notifications and calculations are enabled"
+End If
+End Sub
 
 
 

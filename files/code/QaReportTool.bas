@@ -76,6 +76,7 @@ Sub createNewBugReportSheet()
     locateAndUpdate nameForNewSheet, "Brief description", 1, CellToGetInfoFrom.Text
     locateAndUpdate nameForNewSheet, "Actual Result", 1, CellToGetInfoFrom.Text
     
+        
     Set CellToGetInfoFrom = ActiveSheet.Cells(ObjTestId.Row, getColumnNumber("HDR_EXPECT", "test cases"))
     locateAndUpdate nameForNewSheet, "Expected result", 1, CellToGetInfoFrom.Text
     
@@ -89,10 +90,12 @@ Sub createNewBugReportSheet()
     locateAndUpdate nameForNewSheet, "Bug report creation", 1, strDateTime
     Selection.NumberFormat = "dd/mm/yy h:mm;@"
     
+    Sheets(nameForNewSheet).Rows("1:14").EntireRow.AutoFit
     
     
     ActiveWorkbook.Save
     Application.StatusBar = "Saved..."
+    
     
     Set SelectedCell = Nothing
     Set NewSheet = Nothing
@@ -105,11 +108,9 @@ End Sub
 
 Sub saveBugReportAsPdf()
 
-Dim FilePath, FileOnly, PathOnly As String
+Dim PathOnly As String
 
-FilePath = ActiveWorkbook.FullName
-FileOnly = ActiveWorkbook.Name
-PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
+PathOnly = getThisPath
     
     Rows("3:10002").Select
     
@@ -142,14 +143,24 @@ Sub sendBugReportPdf()
     Dim myAttachments As Outlook.Attachments
     Dim strHTMLBodyHeader, strHTMLBodyFooter
      
-    strHTMLBodyHeader = "<html><body><div style='font-family:Arial Unicode MS;font-size:12pt'>"
-    strHTMLBodyFooter = "</div></body></html>"
+    
+        
+    strAttachPath = getThisPath
+    If checkFileExists(strAttachPath + ActiveSheet.Name + ".pdf") Then
+        strAttachPath = strAttachPath + ActiveSheet.Name + ".pdf"
+    ElseIf checkFileExists(strAttachPath + ActiveSheet.Name + ".xlsx") Then
+        strAttachPath = strAttachPath + ActiveSheet.Name + ".xlsx"
+    Else
+        strAttachPath = ""
+        MsgBox "Bug report is not saved as separate file, please export the bug report and try again", vbOKOnly, "Attachment is not found"
+        Exit Sub
+    End If
 
     
+    strHTMLBodyHeader = "<html><body><div style='font-family:Arial Unicode MS;font-size:12pt'>"
+    strHTMLBodyFooter = "</div></body></html>"
     
     strRecipient = Application.Range("CLIENT_EMAIL").Text
-    
-    Dim FilePath, FileOnly, PathOnly As String
     
     
     Application.ActiveWorkbook.Sheets("email_templates").Range("BUG_REP_ID").Value = ActiveSheet.Name
@@ -170,14 +181,8 @@ Sub sendBugReportPdf()
     strHTMLBody = Application.ActiveWorkbook.Sheets("email_templates").Range("HEADER_MSG").Text + Application.ActiveWorkbook.Sheets("email_templates").Range("BODY_MSG").Text + Application.ActiveWorkbook.Sheets("email_templates").Range("FOOTER_MSG").Text
     strHTMLBody = Replace(strHTMLBody, vbLf, "<br/>")
     strHTMLBody = strHTMLBodyHeader + strHTMLBody + strHTMLBodyFooter
-'-----------
-'refactor this!
-    FilePath = ActiveWorkbook.FullName
-    FileOnly = ActiveWorkbook.Name
-    PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
-    strAttachPath = PathOnly + ActiveSheet.Name + ".pdf"
-    'Debug.Print strAttachPath
-'-----------
+    
+    
     If checkFileExists(strAttachPath) Then
         'Debug.Print strAttachPath + " exists"
         Set oApp = CreateObject("Outlook.Application")
@@ -281,8 +286,36 @@ Dim intLastLine As Integer
     bugReportsWS.Range("A1:B1").Select
     ' TODO: hide into a subroutine in helpers
     formatTableHeader
-    
-    
+End Sub
+Sub saveWorkSheetAsSeparateFile()
+disableDisplayOfUpdates (0)
+Dim strPathToSave As String
+Dim ThisWS As Worksheet
+    Set ThisWS = ActiveWorkbook.ActiveSheet
+Dim NewWB As Workbook
+    strPathToSave = getThisPath + ThisWS.Name + ".xlsx"
+
+Set NewWB = ThisWS.Application.Workbooks.Add
+    ThisWS.Copy Before:=NewWB.Sheets(1)
+    NewWB.SaveAs strPathToSave, xlOpenXMLWorkbook
+    NewWB.Close
+Set NewWB = Nothing
+Set ThisWS = Nothing
+disableDisplayOfUpdates (1)
+End Sub
+
+
+Sub exportCurrentWorksheet()
+    Dim strExpFrmt As String
+    strExpFrmt = Application.Range("BR_EXPORT_FORMAT").Text
+    Debug.Print strExpFrmt
+    If strExpFrmt = "XLSX" Then
+        saveWorkSheetAsSeparateFile
+    ElseIf strExpFrmt = "PDF" Then
+        saveBugReportAsPdf
+    Else
+        MsgBox "Export format is not set in the sheet 'srvc_project'", vbOKOnly, "Please complete the settings for this project"
+    End If
 End Sub
 
 
