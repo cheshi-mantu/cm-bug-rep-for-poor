@@ -75,20 +75,6 @@ Sub setStatus(strStatus As String)
         MsgBox "No Id found for " + strSearchString, vbOKOnly, "Something is wrong"
     End If
 End Sub
-Function sheetExistInCurrentWorkbook(ByVal candidateName As String)
-    Dim boolSheetExist As Boolean
-    
-    For Each SheetItem In ActiveWorkbook.Sheets
-        'Debug.Print SheetItem.Name
-        If InStr(1, SheetItem.Name, candidateName) > 0 Then
-            'Debug.Print "Sheet name " + candidateName + " has been found"
-            sheetExistInCurrentWorkbook = True
-            Exit For
-        Else
-            sheetExistInCurrentWorkbook = False
-        End If
-    Next
-End Function
 Function checkFileExists(fullFilePath As String)
     Dim ObjFS, ObjFile
     Set ObjFS = CreateObject("Scripting.FileSystemObject")
@@ -121,59 +107,6 @@ strCellContent = Application.Selection
 End Sub
 Sub runFieldContentEditor()
     frmAddTextToSelectedCell.Show
-End Sub
-'create copy of current sheet (e.g. for backup)
-Sub subToolSheetCopy(Optional ByVal sheetNameToCopy As String = "ACT_SHEET", Optional ByVal newSheetName As String = "ADD_CUR_DATE")
-    Dim ws1 As Worksheet
-    If sheetNameToCopy = "ACT_SHEET" Then
-        Set ws1 = ActiveWorkbook.ActiveSheet
-    Else
-        Set ws1 = ActiveWorkbook.Sheets(sheetNameToCopy)
-    End If
-    
-    If ws1.Visible = xlSheetHidden Then
-        ws1.Visible = xlSheetVisible
-        ws1.Copy after:=ActiveWorkbook.ActiveSheet
-        ws1.Visible = xlSheetHidden
-    Else
-        ws1.Copy after:=ActiveWorkbook.ActiveSheet
-    End If
-    
-    If newSheetName = "ADD_CUR_DATE" Then
-        ActiveSheet.Name = ws1.Name & Date
-    Else
-        ActiveSheet.Name = newSheetName
-    End If
-Set ws1 = Nothing
-End Sub
-Sub applyWorkModeView()
-    Dim strSheetName As String
-    strSheetName = Application.Range("TEST_CASES_SHEET").Text
-    'Debug.Print strSheetName
-    ActiveWorkbook.Sheets(strSheetName).Rows("3:1001").Select
-    Selection.RowHeight = 14
-    Cells(1, 1).Select
-End Sub
-Sub applyViewerModeView()
-    Dim strSheetName As String
-    strSheetName = Application.Range("TEST_CASES_SHEET").Text
-    ActiveWorkbook.Sheets(strSheetName).Rows("3:1001").Select
-    
-    With Selection
-        .HorizontalAlignment = xlGeneral
-        .VerticalAlignment = xlTop
-        .WrapText = True
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-        .Rows.AutoFit
-    End With
-
-    Cells(1, 1).Select
-    
 End Sub
 
 Sub applyBordersForSelection()

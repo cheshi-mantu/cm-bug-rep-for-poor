@@ -40,6 +40,7 @@ Sub createNewBugReportSheet()
     Dim ObjTestId As Range
     Dim CellToGetInfoFrom As Range
     Dim strDateTime As String
+    
     Set SelectedCell = Application.ActiveCell
     Set CurrentWorksheet = Application.ActiveSheet
 
@@ -214,7 +215,7 @@ Dim strTestCasesSheet As String
 Dim strBugRepSheetName As String
 Dim bugReportsWS As Worksheet
 Dim intLastLine As Integer
-
+    disableDisplayOfUpdates (0)
 
     strBugRepSheetName = "Bug reports"
     strTestCasesSheet = Application.Range("TEST_CASES_SHEET")
@@ -286,6 +287,7 @@ Dim intLastLine As Integer
     bugReportsWS.Range("A1:B1").Select
     ' TODO: hide into a subroutine in helpers
     formatTableHeader
+    disableDisplayOfUpdates (1)
 End Sub
 Sub saveWorkSheetAsSeparateFile()
 disableDisplayOfUpdates (0)
@@ -308,7 +310,6 @@ End Sub
 Sub exportCurrentWorksheet()
     Dim strExpFrmt As String
     strExpFrmt = Application.Range("BR_EXPORT_FORMAT").Text
-    Debug.Print strExpFrmt
     If strExpFrmt = "XLSX" Then
         saveWorkSheetAsSeparateFile
     ElseIf strExpFrmt = "PDF" Then
