@@ -2,7 +2,8 @@ Attribute VB_Name = "QaReportHelpers"
 Function getColumnNumber(strInHeaderToSearch As String, worksheetNameToSearch As String)
     Dim SearchForRange As Range
     With ActiveWorkbook.Sheets(worksheetNameToSearch).Range("A1:Z1")
-        Set SearchForRange = .Find(What:=strInHeaderToSearch, LookIn:=xlValues, LookAt:=xlPart, MatchCase:=False, SearchFormat:=False)
+        Set SearchForRange = .Find(What:=strInHeaderToSearch, LookIn:=xlFormulas, LookAt:=xlPart, MatchCase:=False, SearchFormat:=False)
+'        Set SearchForRange = .Find(What:=strInHeaderToSearch, LookIn:=xlValues, LookAt:=xlPart, MatchCase:=False, SearchFormat:=False)
     End With
     If Not SearchForRange Is Nothing Then
         getColumnNumber = SearchForRange.Column
