@@ -66,7 +66,8 @@ Sub setStatus(strStatus As String)
     'Debug.Print "'" + strSearchString + "'"
     
     With ActiveWorkbook.Sheets("test cases").Range("A1:A1000")
-        Set SearchForRange = .Find(What:=strSearchString, LookIn:=xlValues, LookAt:=xlPart, MatchCase:=False, SearchFormat:=False)
+        Set SearchForRange = .Find(What:=strSearchString, LookIn:=xlFormulas, LookAt:=xlPart, MatchCase:=False, SearchFormat:=False)
+'        Set SearchForRange = .Find(What:=strSearchString, LookIn:=xlValues, LookAt:=xlPart, MatchCase:=False, SearchFormat:=False)
     End With
     
     If Not SearchForRange Is Nothing Then
