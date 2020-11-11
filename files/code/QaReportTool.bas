@@ -109,9 +109,9 @@ End Sub
 
 Sub saveBugReportAsPdf()
 
-Dim PathOnly As String
+Dim pathOnly As String
 
-PathOnly = getThisPath
+pathOnly = getThisPath
     
     Rows("3:10002").Select
     
@@ -131,7 +131,7 @@ PathOnly = getThisPath
     Cells(1, 1).Select
 
 With ActiveSheet
-        .ExportAsFixedFormat Type:=xlTypePDF, Filename:=PathOnly + ActiveSheet.Name, Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas:=False, OpenAfterPublish:=True
+        .ExportAsFixedFormat Type:=xlTypePDF, Filename:=pathOnly + ActiveSheet.Name, Quality:=xlQualityStandard, IncludeDocProperties:=True, IgnorePrintAreas:=False, OpenAfterPublish:=True
      End With
 End Sub
 

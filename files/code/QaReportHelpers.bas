@@ -182,12 +182,18 @@ Sub formatTableHeader()
     End With
 End Sub
 Function getThisPath()
-Dim FilePath, FileOnly, PathOnly As String
+Dim FilePath, FileOnly, pathOnly As String
     FilePath = ActiveWorkbook.FullName
     FileOnly = ActiveWorkbook.Name
-    PathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
-    getThisPath = PathOnly
+    pathOnly = Left(FilePath, Len(FilePath) - Len(FileOnly))
+    getThisPath = pathOnly
 End Function
+Function getThisFileName()
+Dim FileOnly As String
+    FileOnly = ActiveWorkbook.Name
+    getThisFileName = FileOnly
+End Function
+
 
 Sub disableDisplayOfUpdates(EnableDisable As Boolean)
 'if EnableDisable = 0, then disable notifications and updates
